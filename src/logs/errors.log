@@ -1,0 +1,14 @@
+fatal: Testing log {"date":"20/9/2023","method":"GET","url":"/api/loggerTest"}
+error: Testing log {"date":"20/9/2023","method":"GET","url":"/api/loggerTest"}
+error: ["Se requiere un email valido"] {"At":"UsersRepository.getOne (file:///C:/Users/Dne/Desktop/Programaci%C3%B3n/Coderhouse/Proyecto%20Final%20BackEnd/Desaf%C3%ADoLogger/src/models/repositories/users/users.repository.js:36:43)","date":"20/9/2023","method":"POST","url":"/api/users/register"}
+error: ["Se requiere un email valido"] {"At":"UsersRepository.getOne (file:///C:/Users/Dne/Desktop/Programaci%C3%B3n/Coderhouse/Proyecto%20Final%20BackEnd/Desaf%C3%ADoLogger/src/models/repositories/users/users.repository.js:36:43)","date":"20/9/2023","method":"POST","url":"/api/users/register"}
+error: users validation failed: role: `PREMIUM` is not a valid enum value for path `role`. {"At":"Document.invalidate (C:\\Users\\Dne\\Desktop\\Programación\\Coderhouse\\Proyecto Final BackEnd\\Practica-integradora-3-Alvarez\\node_modules\\mongoose\\lib\\document.js:3170:32)","date":"28/9/2023","method":"POST","url":"/api/users/register"}
+error: Cannot read properties of undefined (reading 'toUpperCase') {"At":"new SaveUserDTO (file:///C:/Users/Dne/Desktop/Programaci%C3%B3n/Coderhouse/Proyecto%20Final%20BackEnd/Practica-integradora-3-Alvarez/src/models/dtos/users/users.dto.js:101:38)","date":"28/9/2023","method":"POST","url":"/api/users/register"}
+error: verifyJWT is not defined {"At":"addProduct (file:///C:/Users/Dne/Desktop/Programaci%C3%B3n/Coderhouse/Proyecto%20Final%20BackEnd/Practica-integradora-3-Alvarez/src/controllers/carts/carts.controller.js:103:33)","date":"28/9/2023","method":"PUT","url":"/api/carts/"}
+error: user is not defined {"At":"AddProductDTO.prepareData (file:///C:/Users/Dne/Desktop/Programaci%C3%B3n/Coderhouse/Proyecto%20Final%20BackEnd/Practica-integradora-3-Alvarez/src/models/dtos/carts/carts.dto.js:100:9)","date":"28/9/2023","method":"PUT","url":"/api/carts/"}
+error: No puedes comprar tus propios productos {"At":"AddProductDTO.prepareData (file:///C:/Users/Dne/Desktop/Programaci%C3%B3n/Coderhouse/Proyecto%20Final%20BackEnd/Practica-integradora-3-Alvarez/src/models/dtos/carts/carts.dto.js:112:23)","date":"28/9/2023","method":"PUT","url":"/api/carts/"}
+error: productsRepository is not a constructor
+error: Product not found
+error: Product not found
+error: Product not found
+error: Product not found

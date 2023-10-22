@@ -1,0 +1,22 @@
+{
+  "name": "practica-integradora-4-alvarez",
+  "version": "1.0.0",
+  "description": "Cuarta práctica integradora del curso de programación backend en Coderhouse.",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ValentinAlvarez98/PracticaIntegradora4Alvarez.git"
+  },
+  "author": "Valentín Alvarez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ValentinAlvarez98/PracticaIntegradora4Alvarez/issues"
+  },
+  "homepage": "https://github.com/ValentinAlvarez98/PracticaIntegradora4Alvarez#readme"
+}

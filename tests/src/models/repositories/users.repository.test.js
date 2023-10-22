@@ -38,7 +38,7 @@ const {
 let usersRepository
 
 function connectToDatabase() {
-      return mongoose.connect('mongodb://127.0.0.1:27017/testing?retryWrites=true&w=majority');
+      return mongoose.connect('mongodb://127.0.0.1:27017/devEnv?retryWrites=true&w=majority');
 }
 
 // Seccion de pruebas
@@ -250,11 +250,11 @@ describe('User Repository Tests', () => {
       describe(`\n updateOne tests \n`, () => {
 
             // Se define el test para updateOne
-            it('Debería producir un DTO con error, un DAO inválido y un Repository inválido para updateOne con un email válido, debido a que el email no existe', async function () {
+            it('Debería producir un DTO con error, un DAO inválido y un Repository inválido para updateOne con un usuario que no existe', async function () {
 
                   try {
 
-                        const user = await usersRepository.updateOne(mockUsers.mockUser.email, mockUsers.mockUser);
+                        const user = await usersRepository.updateOne(null, mockUsers.mockUpdatedUser);
 
                         AssertUtilsRepository.invalidRepository(user);
 
@@ -270,14 +270,12 @@ describe('User Repository Tests', () => {
 
                   const user = await usersRepository.addOne(mockUsers.mockRegisterUser);
 
-                  const user2 = await usersRepository.updateOne(mockUsers.mockRegisterUser.email, mockUsers.mockUpdatedUser);
+                  const user2 = await usersRepository.updateOne(user, mockUsers.mockUpdatedUser);
 
                   AssertUtilsDTO.validDTO(user2);
                   AssertUtilsDAO.validDAO(user2);
 
                   AssertUtilsRepository.validUser(user2, ['first_name', 'phone'], [mockUsers.mockUpdatedUser.first_name, mockUsers.mockUpdatedUser.phone]);
-
-                  AssertUtilsRepository.validRepository(user2, user2.password, mockUsers.mockRegisterUser.password);
 
             });
 

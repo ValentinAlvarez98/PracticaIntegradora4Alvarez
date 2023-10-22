@@ -23,7 +23,7 @@ usersRouter.get('/githubcallback', passport.authenticate('github', {
 usersRouter.post('/login', UsersController.loginOne);
 usersRouter.post('/login/admin', UsersController.loginAdmin);
 usersRouter.post('/register', UsersController.addOne);
-usersRouter.put('/update/:email', UsersController.updateOne);
+usersRouter.put('/update', authMiddleware, UsersController.updateOne);
 usersRouter.post('/delete', UsersController.deleteOne);
 usersRouter.post('/sendResetPassword', UsersController.resetPasswordRequest);
 usersRouter.post('/resetPassword/:token', UsersController.resetPassword);

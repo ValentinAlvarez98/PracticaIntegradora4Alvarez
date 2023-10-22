@@ -18,7 +18,7 @@ const {
 } = getDAOS();
 
 function connectToDatabase() {
-      return mongoose.connect('mongodb://127.0.0.1:27017/testing?retryWrites=true&w=majority');
+      return mongoose.connect('mongodb://127.0.0.1:27017/devEnv?retryWrites=true&w=majority');
 }
 
 // Descripción del grupo de pruebas

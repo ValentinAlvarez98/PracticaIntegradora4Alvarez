@@ -35,10 +35,10 @@ export class UsersMongoDAO {
 
       };
 
-      async updateOne(email, payload) {
+      async updateOne(payload) {
 
             return await usersModel.findOneAndUpdate({
-                  email: email
+                  _id: payload._id
             }, payload, {
                   new: true
             });

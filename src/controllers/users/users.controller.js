@@ -7,7 +7,8 @@ import {
 } from '../../models/repositories/index.repository.js';
 
 import {
-      generateJWT
+      generateJWT,
+      verifyJWT
 } from '../../utils/JWT/jwt.utils.js';
 
 
@@ -69,6 +70,10 @@ export class UsersController {
                               date: new Date().toLocaleDateString(),
                         });
 
+                        res.status(401).json({
+                              message: error.message
+                        });
+
                   };
 
             } catch (error) {
@@ -82,6 +87,12 @@ export class UsersController {
                         date: new Date().toLocaleDateString(),
                         At: errorAt
                   });
+
+                  res.status(500).json({
+                        status: 'error',
+                        message: error.message,
+                  });
+
             };
 
       };
@@ -98,6 +109,9 @@ export class UsersController {
 
                         if (exist) {
                               req.logger.warning(`El usuario ${payload.email}, ya existe`);
+                              res.status(400).json({
+                                    message: `El usuario ${payload.email}, ya existe`
+                              });
                               return;
                         }
 
@@ -107,16 +121,19 @@ export class UsersController {
 
                         if (response.payload.password) response.payload.password = undefined;
 
-                        try {
-                              await sendWelcomeEmail(payload.email);
-                        } catch (error) {
-                              req.logger.error('Error al enviar correo de bienvenida:', error);
-                        }
-
                         res.status(201).json({
                               message: `Usuario ${payload.email}, creado correctamente`,
                               response
                         });
+
+                        try {
+
+                              await sendWelcomeEmail(payload.email);
+
+                        } catch (error) {
+                              req.logger.error('Error al enviar correo de bienvenida:', error);
+                        }
+
 
                   } catch (error) {
 
@@ -128,6 +145,11 @@ export class UsersController {
                               url: req.originalUrl,
                               date: new Date().toLocaleDateString(),
                               At: errorAt
+                        });
+
+                        res.status(500).json({
+                              status: 'error',
+                              message: error.message,
                         });
 
                   };
@@ -144,6 +166,11 @@ export class UsersController {
                         At: errorAt
                   });
 
+                  res.status(500).json({
+                        status: 'error',
+                        message: error.message,
+                  });
+
             };
 
       };
@@ -152,9 +179,9 @@ export class UsersController {
 
             try {
 
-                  const {
-                        email
-                  } = req.params;
+                  const cookie = verifyJWT(req.cookies.auth);
+
+                  const email = cookie.payload.email;
 
                   const payload = req.body;
 
@@ -162,10 +189,13 @@ export class UsersController {
 
                   if (!exist) {
                         req.logger.warning(`El usuario ${email}, no existe`);
+                        res.status(400).json({
+                              message: `El usuario ${email}, no existe`
+                        });
                         return;
                   }
 
-                  const updatedUser = await usersRepository.updateOne(email, payload);
+                  const updatedUser = await usersRepository.updateOne(exist, payload);
 
                   const response = successResponse(updatedUser);
 
@@ -193,6 +223,11 @@ export class UsersController {
                         url: req.originalUrl,
                         date: new Date().toLocaleDateString(),
                         At: errorAt
+                  });
+
+                  res.status(500).json({
+                        status: 'error',
+                        message: error.message,
                   });
 
             };

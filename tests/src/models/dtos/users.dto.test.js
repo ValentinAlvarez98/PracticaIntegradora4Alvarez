@@ -266,7 +266,7 @@ describe('User DTOs Tests', () => {
             });
 
             // Descripción de la prueba
-            it('debería producir un DTO válido para UpdateUserDTO con igual _id e igual contraseña, debido a un usuario ingresado válido y un usuario válido de la base de datos', () => {
+            it('debería producir un DTO válido para UpdateUserDTO con igual _id, debido a un usuario ingresado válido y un usuario válido de la base de datos', () => {
 
                   // Given
                   const dto = new UpdateUserDTO({
@@ -278,35 +278,22 @@ describe('User DTOs Tests', () => {
                   // Then
                   AssertUtilsDTO.validDTO(dto);
 
-                  AssertUtilsDTO.validEqualsDTO(dto, ['_id', 'password'], [mockUsers.mockUserDB._id, mockUsers.mockUserDB.password]);
+                  AssertUtilsDTO.validEqualsDTO(dto, ['_id'], [mockUsers.mockUserDB._id]);
 
             });
 
             // Descripción de la prueba
-            it('Debería producir un DTO inválido para UpdateUserDTO, debido a un usuario ingresado válido y un usuario vacío de la base de datos', () => {
+            it('Debería producir un DTO inválido para UpdateUserDTO, debido a que las contraseñas no coinciden', () => {
 
                   // Given
                   const dto = new UpdateUserDTO({
-                        ...mockUsers.mockUser
-                  }, null);
-
-                  // Then
-                  AssertUtilsDTO.invalidDTO(dto, 'El usuario que se intenta actualizar, no existe');
-
-            });
-
-            // Descripción de la prueba
-            it('Debería producir un DTO inválido para UpdateUserDTO, debido a una contraseña incorrecta', () => {
-
-                  // Given
-                  const dto = new UpdateUserDTO({
-                        ...mockUsers.mockUserPassWrong
+                        ...mockUsers.mockUserConfirmPassWrong
                   }, {
                         ...mockUsers.mockUserDB
                   });
 
                   // Then
-                  AssertUtilsDTO.invalidDTO(dto, 'Contraseña incorrecta');
+                  AssertUtilsDTO.invalidDTO(dto, 'Las contraseñas no coinciden');
 
             });
 

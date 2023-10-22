@@ -65,17 +65,13 @@ export class UsersRepository {
 
       };
 
-      async updateOne(email, payload) {
+      async updateOne(oldUser, newUser) {
 
-            const user = new GetUserDTO(email);
-
-            const userToUpdate = await this.dao.getOne(user);
-
-            const updatedPayload = new UpdateUserDTO(payload, userToUpdate);
+            const updatedPayload = new UpdateUserDTO(newUser, oldUser);
 
             if (updatedPayload.errors) throw new Error(JSON.stringify(updatedPayload.errors));
 
-            return await this.dao.updateOne(email, updatedPayload);
+            return await this.dao.updateOne(updatedPayload);
 
       };
 
@@ -113,7 +109,7 @@ export class UsersRepository {
 
             if (userToUpdate.errors) throw new Error(JSON.stringify(userToUpdate.errors));
 
-            return await this.dao.updateOne(payload.email, userToUpdate);
+            return await this.dao.updateOne(userToUpdate);
 
       };
 
@@ -129,7 +125,7 @@ export class UsersRepository {
 
             if (updatedUser.errors) throw new Error(JSON.stringify(updatedUser.errors));
 
-            return await this.dao.updateOne(payload.email, updatedUser);
+            return await this.dao.updateOne(updatedUser);
 
       };
 

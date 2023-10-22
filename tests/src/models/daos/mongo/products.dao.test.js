@@ -16,7 +16,7 @@ const {
       cartsMongoDAO
 } = getDAOS();
 
-mongoose.connect('mongodb://127.0.0.1:27017/testing?retryWrites=true&w=majority');
+mongoose.connect('mongodb://127.0.0.1:27017/devEnv?retryWrites=true&w=majority');
 
 // Descripción del grupo de pruebas
 describe('Pruebas del DAO de productos', () => {

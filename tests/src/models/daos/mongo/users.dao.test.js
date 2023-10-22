@@ -11,13 +11,16 @@ import {
 import {
       mockUsers
 } from '../../../../utils/mocks.utils.js';
+import {
+      mock
+} from 'node:test';
 
 const {
       usersMongoDAO,
 } = getDAOS();
 
 function connectToDatabase() {
-      return mongoose.connect('mongodb://127.0.0.1:27017/testing?retryWrites=true&w=majority');
+      return mongoose.connect('mongodb://127.0.0.1:27017/devEnv?retryWrites=true&w=majority');
 }
 
 // Descripción del grupo de pruebas
@@ -137,10 +140,10 @@ describe('User DAO Tests', () => {
       describe(`\n updateOne tests \n`, () => {
 
             // Descripción de la prueba
-            it('Debería producir un DAO inválido para updateOne con un email válido, debido a que el email no existe', async function () {
+            it('Debería producir un DAO inválido para updateOne si el usuario no existe', async function () {
 
                   // When
-                  const result = await this.usersDao.updateOne(mockUsers.mockUser.email, mockUsers.mockUser);
+                  const result = await this.usersDao.updateOne(mockUsers.mockUser);
 
                   // Then
                   AssertUtilsDAO.invalidDAO(result);
@@ -152,9 +155,13 @@ describe('User DAO Tests', () => {
 
                   // Given
                   const user = await this.usersDao.addOne(mockHashedPassword);
+                  const userToUpdate = {
+                        ...mockUsers.mockUpdatedUser,
+                        _id: user._id
+                  };
 
                   // When
-                  const result = await this.usersDao.updateOne(mockUsers.mockUser.email, mockUsers.mockUpdatedUser);
+                  const result = await this.usersDao.updateOne(userToUpdate);
 
                   // Then
                   AssertUtilsDAO.validDAO(result);

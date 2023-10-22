@@ -145,42 +145,34 @@ export class SaveUserDTO {
 
 export class UpdateUserDTO {
 
-      constructor(updatedPayload, payloadToUpdate) {
+      constructor(newPayload, oldPayload) {
 
             try {
 
-                  if (updatedPayload.email && !validEmail(updatedPayload.email)) throw new ValidationError(["Se requiere un email valido"]);
+                  if (newPayload.email && !validEmail(newPayload.email)) throw new ValidationError(["Se requiere un email valido"]);
 
-                  if (updatedPayload.password && updatedPayload.password.length < 8) throw new ValidationError(["La contraseña debe tener al menos 8 caracteres"]);
+                  if (newPayload.password && newPayload.password.length < 8) throw new ValidationError(["La contraseña debe tener al menos 8 caracteres"]);
 
-                  if (!payloadToUpdate) throw new ValidationError(["El usuario que se intenta actualizar, no existe"]);
+                  if (newPayload.password && newPayload.password !== newPayload.confirm_password) throw new ValidationError(["Las contraseñas no coinciden"]);
 
-                  const executeValidation = updatedPayload.password && payloadToUpdate ? true : false;
+                  if (!oldPayload) throw new ValidationError(["El usuario que se intenta actualizar, no existe"]);
 
-                  if (executeValidation) {
+                  for (const key in newPayload) {
 
-                        const compare = compareHash(updatedPayload.password, payloadToUpdate);
-
-                        if (!compare) throw new ValidationError(["Contraseña incorrecta"]);
+                        if (newPayload[key] && key !== "_id") oldPayload[key] = newPayload[key];
 
                   };
 
-                  for (const key in updatedPayload) {
-
-                        if (updatedPayload[key] && key !== "password" && key !== "_id") payloadToUpdate[key] = updatedPayload[key];
-
-                  };
-
-                  this._id = payloadToUpdate._id;
-                  this.first_name = payloadToUpdate.first_name;
-                  this.last_name = payloadToUpdate.last_name;
-                  this.email = payloadToUpdate.email;
-                  this.age = payloadToUpdate.age;
-                  this.password = payloadToUpdate.password;
-                  this.role = payloadToUpdate.role ? payloadToUpdate.role.toUpperCase() : 'USER';
-                  this.phone = payloadToUpdate.phone ? payloadToUpdate.phone : '';
-                  this.password_reset_token = payloadToUpdate.password_reset_token ? payloadToUpdate.password_reset_token : '';
-                  this.password_reset_expires = payloadToUpdate.password_reset_expires ? payloadToUpdate.password_reset_expires : '';
+                  this._id = oldPayload._id;
+                  this.first_name = oldPayload.first_name;
+                  this.last_name = oldPayload.last_name;
+                  this.email = oldPayload.email;
+                  this.age = oldPayload.age;
+                  this.password = oldPayload.password;
+                  this.role = oldPayload.role ? oldPayload.role.toUpperCase() : 'USER';
+                  this.phone = oldPayload.phone ? oldPayload.phone : '';
+                  this.password_reset_token = oldPayload.password_reset_token ? oldPayload.password_reset_token : '';
+                  this.password_reset_expires = oldPayload.password_reset_expires ? oldPayload.password_reset_expires : '';
 
             } catch (error) {
 
@@ -289,6 +281,7 @@ export class CreateResetTokenDTO {
 
                   expires.setHours(expires.getHours() + 1);
 
+                  this._id = payload._id;
                   this.email = payload.email;
                   this.first_name = payload.first_name;
                   this.last_name = payload.last_name;
@@ -338,6 +331,7 @@ export class ResetPasswordDTO {
 
                   const hashedPassword = createHash(payload.password);
 
+                  this._id = user._id;
                   this.email = user.email;
                   this.first_name = user.first_name;
                   this.last_name = user.last_name;

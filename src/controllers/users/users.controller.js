@@ -1,5 +1,6 @@
 import {
-      successResponse
+      successResponse,
+      errorResponse
 } from '../../utils/responses/responses.utils.js';
 
 import {
@@ -38,6 +39,9 @@ export class UsersController {
 
                   if (!user && payload.email) {
                         req.logger.warning(`El usuario ${payload.email ? payload.email : payload.id}, no existe`);
+                        res.status(400).json({
+                              message: `El usuario ${payload.email ? payload.email : payload.id}, no existe`
+                        });
                         return;
                   }
 
@@ -175,13 +179,52 @@ export class UsersController {
 
       };
 
+      static async logout(req, res, next) {
+
+            try {
+
+                  const token = req.cookies.auth;
+
+                  const user = req.user;
+
+                  if (!user) {
+                        req.logger.warning(`El usuario ${user.email}, no existe`);
+                        return;
+                  }
+
+                  res.clearCookie('auth');
+
+                  res.status(200).json({
+                        status: 'success',
+                        message: `Usuario ${user.email}, desconectado correctamente`
+                  });
+
+            } catch (error) {
+
+                  let errorAt = error.stack ? error.stack.split('\n    at ')[1] : '';
+
+                  req.logger.error({
+                        message: error.message,
+                        method: req.method,
+                        url: req.originalUrl,
+                        date: new Date().toLocaleDateString(),
+                        At: errorAt
+                  });
+
+                  res.status(500).json({
+                        status: 'error',
+                        message: error.message,
+                  });
+
+            };
+
+      };
+
       static async updateOne(req, res, next) {
 
             try {
 
-                  const cookie = verifyJWT(req.cookies.auth);
-
-                  const email = cookie.payload.email;
+                  const email = req.user.email;
 
                   const payload = req.body;
 
@@ -201,6 +244,8 @@ export class UsersController {
 
                   const token = generateJWT(response.payload);
 
+                  res.clearCookie('auth');
+
                   res.cookie('auth', token, {
                         httpOnly: true,
                         maxAge: 60 * 60 * 1000,
@@ -209,7 +254,7 @@ export class UsersController {
                   if (response.payload.password) response.payload.password = undefined;
 
                   res.status(200).json({
-                        message: `Usuario ${email}, actualizado correctamente`,
+                        message: `Usuario ${exist.email}, actualizado correctamente`,
                         response
                   });
 
@@ -238,12 +283,19 @@ export class UsersController {
 
             try {
 
-                  const payload = req.body;
+                  const payload = req.user;
 
-                  const user = await usersRepository.getOne(payload.email);
+                  const body = req.body;
+
+                  const email = body.email ? body.email : payload.email;
+
+                  const user = await usersRepository.getOne(email);
 
                   if (!user) {
-                        req.logger.warning(`El usuario ${payload.email}, no existe`);
+                        req.logger.warning(`El usuario ${email}, no existe`);
+                        res.status(400).json({
+                              message: `El usuario ${email}, no existe`
+                        });
                         return;
                   }
 
@@ -255,16 +307,23 @@ export class UsersController {
 
                   if (response.payload.password) response.payload.password = undefined;
 
-                  try {
-                        await sendGoodbyeEmail(payload.email);
-                  } catch (error) {
-                        req.logger.error('Error al enviar correo de despedida:', error);
-                  }
+                  res.clearCookie('auth');
 
                   res.status(200).json({
                         message: `Usuario ${deletedUser.email}, eliminado correctamente`,
                         response
                   });
+
+                  try {
+                        await sendGoodbyeEmail(payload.email);
+                  } catch (error) {
+                        req.logger.error('Error al enviar correo de despedida:', error);
+                        res.status(500).json({
+                              status: 'error',
+                              message: error.message,
+                        });
+                  }
+
 
             } catch (error) {
 
@@ -276,6 +335,11 @@ export class UsersController {
                         url: req.originalUrl,
                         date: new Date().toLocaleDateString(),
                         At: errorAt
+                  });
+
+                  res.status(500).json({
+                        status: 'error',
+                        message: error.message,
                   });
 
             };
@@ -294,6 +358,9 @@ export class UsersController {
 
                   if (!response.payload) {
                         req.logger.warning(`El usuario ${payload.email ? payload.email : payload.id}, no existe`);
+                        res.status(400).json({
+                              message: `El usuario ${payload.email ? payload.email : payload.id}, no existe`
+                        });
                         return;
                   }
 
@@ -325,6 +392,69 @@ export class UsersController {
                   });
 
             };
+
+      };
+
+      static async resetPasswordRequest(req, res, next) {
+
+            try {
+
+                  const payload = req.body;
+
+                  const updatedUser = await usersRepository.createResetToken(payload);
+
+                  if (!updatedUser) {
+                        req.logger.warning(`El usuario ${payload.email}, no existe`);
+                        res.status(400).json({
+                              message: `El usuario ${payload.email}, no existe`
+                        });
+                        return;
+                  }
+
+                  res.status(200).json({
+                        message: `Correo electrónico de restablecimiento de contraseña enviado a ${updatedUser.email}`,
+                        endpoint: `${CONFIG.API_URL}/users/resetPassword?token=${updatedUser.password_reset_token}`
+                  });
+
+                  await sendResetPassword(updatedUser.email, updatedUser.password_reset_token);
+
+            } catch (error) {
+
+                  req.logger.error('Error al enviar correo de restablecimiento de contraseña:', error);
+
+                  res.status(500).json({
+                        status: 'error',
+                        message: error.message,
+                  });
+
+            }
+
+      };
+
+      static async resetPassword(req, res, next) {
+
+            try {
+
+                  const token = req.params.token;
+
+                  const payload = {
+                        ...req.body,
+                        token
+                  }
+
+                  const updatedUser = await usersRepository.resetPassword(payload);
+
+                  await sendResetPasswordConfirmation(payload.email);
+
+                  res.status(200).json({
+                        message: `Contraseña de usuario ${updatedUser.email}, restablecida correctamente`
+                  });
+
+            } catch (error) {
+
+                  next(error);
+
+            }
 
       };
 
@@ -388,54 +518,5 @@ export class UsersController {
             };
 
       };
-
-      static async resetPasswordRequest(req, res, next) {
-
-            try {
-
-                  const payload = req.body;
-
-                  const updatedUser = await usersRepository.createResetToken(payload);
-
-                  await sendResetPassword(updatedUser.email, updatedUser.password_reset_token);
-
-                  res.status(200).json({
-                        message: `Correo electrónico de restablecimiento de contraseña enviado a ${updatedUser.email}`
-                  });
-
-            } catch (error) {
-
-                  next(error);
-
-            }
-
-      };
-
-      static async resetPassword(req, res, next) {
-
-            try {
-
-                  const token = req.params.token;
-
-                  const payload = {
-                        ...req.body,
-                        token
-                  }
-
-                  const updatedUser = await usersRepository.resetPassword(payload);
-
-                  await sendResetPasswordConfirmation(payload.email);
-
-                  res.status(200).json({
-                        message: `Contraseña de usuario ${updatedUser.email}, restablecida correctamente`
-                  });
-
-            } catch (error) {
-
-                  next(error);
-
-            }
-
-      }
 
 };

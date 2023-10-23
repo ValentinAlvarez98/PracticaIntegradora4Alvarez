@@ -55,14 +55,6 @@ export async function sendWelcomeEmail(email) {
                   <h3> Como siempre, gracias por confiar en nosotros</h3>
       </div>
 
-      <div>
-                  <p>Como aclaración:</p>
-                  <p>Cuando veas un error a esta altura del proyecto, imagina que este soy yo cada vez que veo mi código:
-                  </p>
-      </div>
-
-      <img src = "cid:dissociated-cat">
-
       `;
 
       const mailOptions = {
@@ -70,11 +62,6 @@ export async function sendWelcomeEmail(email) {
             to: email,
             subject: 'Bienvenido',
             html: HTML,
-            attachments: [{
-                  filename: 'dissociated-cat.gif',
-                  path: process.cwd() + '/public/assets/imgs/dissociated-cat.gif',
-                  cid: 'dissociated-cat'
-            }]
       };
 
       return new Promise((resolve, reject) => {
@@ -108,14 +95,6 @@ export async function sendGoodbyeEmail(email) {
                   <h3> Como siempre, gracias por confiar en nosotros</h3>
       </div>
 
-      <div>
-                  <p>Como aclaración:</p>
-                  <p>Cuando veas un error a esta altura del proyecto, imagina que este soy yo cada vez que veo mi código:
-                  </p>
-      </div>
-
-      <img src = "cid:dissociated-cat">
-
       `;
 
       const mailOptions = {
@@ -123,11 +102,6 @@ export async function sendGoodbyeEmail(email) {
             to: email,
             subject: 'Adios',
             html: HTML,
-            attachments: [{
-                  filename: 'dissociated-cat.gif',
-                  path: process.cwd() + '/public/assets/imgs/dissociated-cat.gif',
-                  cid: 'dissociated-cat'
-            }]
       };
 
       return new Promise((resolve, reject) => {

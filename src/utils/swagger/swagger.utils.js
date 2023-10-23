@@ -7,7 +7,7 @@ export const swaggerOptions = {
             info: {
                   title: 'Desafío - Documentación de la API',
                   version: '1.0.0',
-                  description: `Documentación sobre endpoints de Productos y Carritos. \\n
+                  description: `Documentación sobre el manejo de productos, carritos y usuarios. \\n
             Contacto:`,
                   contact: {
                         name: 'Valentín Alvarez',

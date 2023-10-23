@@ -37,7 +37,21 @@ export class ProductsController {
 
         } catch (error) {
 
-            next(error);
+            let errorAt = error.stack ? error.stack.split('\n')[1].trim() : undefined;
+
+            req.logger.error({
+                message: error.message,
+                method: req.method,
+                url: req.originalUrl,
+                date: new Date().toLocaleDateString(),
+                At: errorAt
+            });
+
+            res.status(500).send({
+                status: 'error',
+                payload: error.message
+            });
+
 
         };
 
@@ -54,11 +68,27 @@ export class ProductsController {
 
             res.send({
                 status: 'success',
+                message: `Producto con id: ${id}, encontrado correctamente en la base de datos`,
                 payload: product
             });
 
         } catch (error) {
-            next(error);
+
+            let errorAt = error.stack ? error.stack.split('\n')[1].trim() : undefined;
+
+            req.logger.error({
+                message: error.message,
+                method: req.method,
+                url: req.originalUrl,
+                date: new Date().toLocaleDateString(),
+                At: errorAt
+            });
+
+            res.status(500).send({
+                status: 'error',
+                payload: error.message
+            });
+
         };
 
     };
@@ -81,7 +111,20 @@ export class ProductsController {
 
         } catch (error) {
 
-            next(error);
+            let errorAt = error.stack ? error.stack.split('\n')[1].trim() : undefined;
+
+            req.logger.error({
+                message: error.message,
+                method: req.method,
+                url: req.originalUrl,
+                date: new Date().toLocaleDateString(),
+                At: errorAt
+            });
+
+            res.status(500).send({
+                status: 'error',
+                payload: error.message
+            });
 
         };
 
@@ -97,18 +140,32 @@ export class ProductsController {
 
             const product = req.body;
             const token = req.cookies.auth;
-
             const user = verifyJWT(token);
-            const result = await productsRepository.updateOne(id, product, user);
+
+            const result = await productsRepository.updateOne(id, product, user.payload);
 
             res.send({
                 status: 'success',
-                payload: `Producto con id: ${id}, actualizado correctamente en la base de datos`
+                message: `Producto con id: ${id}, actualizado correctamente en la base de datos`,
+                payload: result
             });
 
         } catch (error) {
 
-            next(error);
+            let errorAt = error.stack ? error.stack.split('\n')[1].trim() : undefined;
+
+            req.logger.error({
+                message: error.message,
+                method: req.method,
+                url: req.originalUrl,
+                date: new Date().toLocaleDateString(),
+                At: errorAt
+            });
+
+            res.status(500).send({
+                status: 'error',
+                payload: error.message
+            });
 
         };
 
@@ -123,18 +180,32 @@ export class ProductsController {
             } = req.params;
 
             const token = req.cookies.auth;
-
             const user = verifyJWT(token);
-            const result = await productsRepository.deleteOne(id, user);
+
+            const result = await productsRepository.deleteOne(id, user.payload);
 
             res.send({
                 status: 'success',
-                payload: `Producto con id: ${id}, eliminado correctamente de la base de datos`
+                message: `Producto con id: ${id}, eliminado correctamente de la base de datos`,
+                payload: result
             });
 
         } catch (error) {
 
-            next(error);
+            let errorAt = error.stack ? error.stack.split('\n')[1].trim() : undefined;
+
+            req.logger.error({
+                message: error.message,
+                method: req.method,
+                url: req.originalUrl,
+                date: new Date().toLocaleDateString(),
+                At: errorAt
+            });
+
+            res.status(500).send({
+                status: 'error',
+                payload: error.message
+            });
 
         };
 

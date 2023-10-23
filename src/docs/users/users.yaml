@@ -1,0 +1,124 @@
+
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Users API
+  description: API para el manejo de usuarios.
+
+paths:
+  /api/users/login:
+    post:
+      summary: Iniciar sesión como usuario.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        200:
+          description: Usuario ha iniciado sesión correctamente.
+        401:
+          description: Credenciales incorrectas.
+  
+  /api/users/admin:
+    post:
+      summary: Iniciar sesión como administrador.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        200:
+          description: Administrador ha iniciado sesión correctamente.
+        401:
+          description: Credenciales incorrectas o el usuario no es un administrador.
+          
+  /api/users/register:
+    post:
+      summary: Registrar un nuevo usuario.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                email:
+                  type: string
+                age:
+                  type: integer
+                password:
+                  type: string
+                confirm_password: 
+                  type: string
+      responses:
+        201:
+          description: Usuario registrado correctamente.
+        400:
+          description: Error en los datos proporcionados.
+  
+  /api/users/logout:
+    post:
+      summary: Cerrar sesión del usuario.
+      security:
+        - CookieAuth: []
+      responses:
+        200:
+          description: Sesión cerrada correctamente.
+
+  /api/users/update:
+    put:
+      summary: Actualizar información del usuario.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                email:
+                  type: string
+                age:
+                  type: integer
+      responses:
+        200:
+          description: Información del usuario actualizada correctamente.
+        400:
+          description: Error en los datos proporcionados.
+
+  /api/users/delete:
+    delete:
+      summary: Eliminar cuenta de usuario.
+      responses:
+        200:
+          description: Usuario eliminado correctamente.
+        400:
+          description: Error al intentar eliminar el usuario.
+
+components:
+  securitySchemes:
+    CookieAuth:
+      type: apiKey
+      in: cookie
+      name: auth

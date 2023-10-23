@@ -14,7 +14,8 @@ const {
 } = getDTOS();
 
 const {
-    productsMongoDAO
+    productsMongoDAO,
+    usersMongoDAO
 } = getDAOS();
 
 export class ProductsRepository {
@@ -22,6 +23,7 @@ export class ProductsRepository {
     constructor() {
 
         this.dao = productsMongoDAO;
+        this.usersDao = usersMongoDAO;
 
     };
 
@@ -59,45 +61,51 @@ export class ProductsRepository {
 
     async updateOne(id, product, userPayload) {
 
-        const user = userPayload.payload;
+        const user = await this.usersDao.getOne(userPayload);
 
         if (!user.role === 'ADMIN' || !user.role === 'PREMIUM') {
             throw new Error('No tienes permisos para realizar esta acción')
         }
 
-        const productToUpdate = this.getById(id);
+        const productToUpdate = await this.getById(id);
 
         if (!productToUpdate) {
             throw new Error('El producto no existe');
         };
 
-        if (productToUpdate.owner !== user._id) {
+        if (productToUpdate.owner.toString() !== user._id.toString()) {
             throw new Error('El producto no te pertenece');
         };
 
-        return await this.dao.updateById(id, product);
+        const result = await this.dao.updateById(id, product);
+
+        const updatedProduct = await this.getById(id);
+
+        return updatedProduct;
 
     };
 
     async deleteOne(id, userPayload) {
 
-        const user = userPayload.payload;
+        const user = await this.usersDao.getOne(userPayload);
 
         if (!user.role === 'ADMIN' || !user.role === 'PREMIUM') {
             throw new Error('No tienes permisos para realizar esta acción')
         }
 
-        const productToUpdate = this.getById(id);
+        const productToUpdate = await this.getById(id);
 
         if (!productToUpdate) {
             throw new Error('El producto no existe');
         };
 
-        if (productToUpdate.owner !== user._id) {
+        if (productToUpdate.owner.toString() !== user._id.toString()) {
             throw new Error('El producto no te pertenece');
         };
 
-        return await this.dao.deleteById(id);
+        const result = await this.dao.deleteById(id);
+
+        return productToUpdate;
 
     };
 

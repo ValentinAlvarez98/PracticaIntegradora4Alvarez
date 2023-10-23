@@ -29,7 +29,7 @@ export class SaveProductDTO {
             category: this.payload.category,
             thumbnails: this.payload.thumbnails,
             id: this.payload.id,
-            owner: user.id ? user.id : 'ADMIN',
+            owner: user._id ? user._id : 'ADMIN',
         }
 
         console.log(product);
@@ -38,7 +38,7 @@ export class SaveProductDTO {
 
         Object.keys(product).forEach(key => {
 
-            if (product[key] === undefined) {
+            if (key !== 'thumbnails' && product[key] === undefined) {
                 campos.push(key.toUpperCase());
             }
 

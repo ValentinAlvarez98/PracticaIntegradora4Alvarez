@@ -76,7 +76,7 @@ paths:
           description: No está autorizado.
 
 
-  /api/products:/{id}:
+  /api/products/{id}:
     get:
       summary: Obtener un producto por ID
       parameters:

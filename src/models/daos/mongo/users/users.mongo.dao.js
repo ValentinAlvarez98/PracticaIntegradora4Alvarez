@@ -19,13 +19,12 @@ export class UsersMongoDAO {
                         email: payload.email
                   }).lean();
 
-            } else if (payload._id) {
+            }
 
-                  return await usersModel.findOne({
-                        _id: payload._id
-                  }).lean();
+            return await usersModel.findOne({
+                  _id: payload._id
+            }).lean();
 
-            };
 
       };
 

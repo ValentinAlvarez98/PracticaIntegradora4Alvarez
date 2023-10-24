@@ -5,6 +5,12 @@ const storage = multer.diskStorage({
       destination: (req, file, cb) => {
             let dir = '';
             switch (file.fieldname) {
+                  case 'profile':
+                        dir = './uploads/profiles';
+                        break;
+                  case 'product':
+                        dir = './uploads/products';
+                        break;
                   case 'documents':
                         dir = './uploads/documents';
                         break;

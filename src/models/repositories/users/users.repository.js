@@ -7,10 +7,13 @@ import {
 } from "../../dtos/index.dtos.js";
 
 const {
+      GetAllDTO,
       SaveUserDTO,
       LoadUserDTO,
       GetUserDTO,
-      UpdateRoleDTO,
+      UpdateDocumentsDTO,
+      UpdateRolePremiumDTO,
+      UpdateRoleUserDTO,
       UpdateUserDTO,
       DeleteUserDTO,
       LoadAdminDTO,
@@ -31,6 +34,18 @@ export class UsersRepository {
             this.dao.memory = usersMemoryDAO;
 
       };
+
+      async getAll() {
+
+            const usersPayload = await this.dao.getAll();
+
+            const users = new GetAllDTO(usersPayload);
+
+            if (users.errors) throw new Error(JSON.stringify(users.errors));
+
+            return users;
+
+      }
 
       async getOne(payload) {
 
@@ -66,14 +81,53 @@ export class UsersRepository {
 
       };
 
+      async uploadDocuments(_id, files) {
+
+            const user = await this.dao.getOne({
+                  _id: _id,
+            });
+
+            if (!user) throw new Error('No se ha encontrado el usuario');
+
+            const userWithDocuments = new UpdateDocumentsDTO(user, files);
+
+            if (userWithDocuments.errors) throw new Error(JSON.stringify(userWithDocuments.errors));
+
+            const result = await this.dao.updateOne(userWithDocuments);
+
+            return result ? userWithDocuments : result;
+
+      };
+
       async updateRole(payload) {
 
             const user = await this.dao.getOne({
-                  email: payload.email,
+                  email: payload.email.toLowerCase(),
                   _id: payload._id
             });
 
-            const updatedRole = new UpdateRoleDTO(user);
+            if (!user) throw new Error('No se ha encontrado el usuario');
+
+            if (user.role === 'ADMIN') throw new Error('No puedes cambiar el rol de un administrador');
+
+            if (user.role === 'PREMIUM') {
+
+                  const updatedRole = new UpdateRoleUserDTO(user);
+
+                  const updatedUser = {
+                        ...user,
+                        role: updatedRole.role
+                  }
+
+                  if (updatedRole.errors) throw new Error(JSON.stringify(updatedRole.errors));
+
+                  const result = await this.dao.updateOne(updatedUser);
+
+                  return result ? updatedUser : result;
+
+            }
+
+            const updatedRole = new UpdateRolePremiumDTO(user);
 
             const updatedUser = {
                   ...user,

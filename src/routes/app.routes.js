@@ -23,7 +23,7 @@ import {
 
 import {
       addLogger as loggerMiddelware
-} from '../utils/logger/logger.js';
+} from '../middlewares/logger.middleware.js';
 
 import {
       swaggerOptions

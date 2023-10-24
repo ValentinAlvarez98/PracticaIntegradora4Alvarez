@@ -13,6 +13,8 @@ import {
 
 import passport from "passport";
 
+import upload from "../../middlewares/multer.middleware.js";
+
 const usersRouter = Router();
 
 usersRouter.get('/github', passport.authenticate('github', {
@@ -21,11 +23,12 @@ usersRouter.get('/github', passport.authenticate('github', {
 usersRouter.get('/githubcallback', passport.authenticate('github', {
       failureRedirect: '/login'
 }), UsersController.loginGithubCallback);
-/* usersRouter.get('/', adminMiddleware, UsersController.getAll); */
+usersRouter.get('/', adminMiddleware, UsersController.getAll);
 usersRouter.post('/login', UsersController.loginOne);
 usersRouter.post('/login/admin', UsersController.loginAdmin);
 usersRouter.post('/register', UsersController.addOne);
 usersRouter.post('/logout', authMiddleware, UsersController.logout);
+usersRouter.post('/:id/documents', upload.array('documents'), UsersController.uploadDocuments);
 usersRouter.put('/premium/:id', adminMiddleware, UsersController.updateRole);
 usersRouter.put('/update', authMiddleware, UsersController.updateOne);
 usersRouter.delete('/delete', authMiddleware, UsersController.deleteOne);

@@ -1,8 +1,11 @@
 import {
+      GetAllDTO,
       SaveUserDTO,
       LoadUserDTO,
       GetUserDTO,
-      UpdateRoleDTO,
+      UpdateDocumentsDTO,
+      UpdateRolePremiumDTO,
+      UpdateRoleUserDTO,
       UpdateUserDTO,
       DeleteUserDTO,
       LoadAdminDTO,
@@ -11,6 +14,7 @@ import {
 } from "./users/users.dto.js";
 
 import {
+      GetProductDTO,
       SaveProductDTO,
 } from "./products/products.dto.js";
 
@@ -24,10 +28,13 @@ import {
 } from "./carts/carts.dto.js";
 
 export const getDTOS = () => ({
+      GetAllDTO,
       SaveUserDTO,
       LoadUserDTO,
       GetUserDTO,
-      UpdateRoleDTO,
+      UpdateDocumentsDTO,
+      UpdateRolePremiumDTO,
+      UpdateRoleUserDTO,
       UpdateUserDTO,
       DeleteUserDTO,
       LoadAdminDTO,
@@ -39,5 +46,6 @@ export const getDTOS = () => ({
       AddProductDTO,
       DeleteProductFromCartDTO,
       PurchaseCartDTO,
+      GetProductDTO,
       SaveProductDTO,
 });

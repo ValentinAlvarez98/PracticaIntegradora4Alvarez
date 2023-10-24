@@ -1,7 +1,7 @@
 import express from 'express';
 import {
     addLogger as loggerMiddleware
-} from '../../utils/logger/logger.js';
+} from '../../middlewares/logger.middleware.js';
 
 const loggerRouter = express.Router();
 

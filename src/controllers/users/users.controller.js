@@ -29,6 +29,35 @@ const {
 
 export class UsersController {
 
+      static async getAll(req, res, next) {
+
+            try {
+
+                  const result = await usersRepository.getAll();
+
+                  res.status(200).json({
+                        status: "success",
+                        message: `Usuarios encontrados correctamente`,
+                        payload: result
+                  });
+
+            } catch (error) {
+
+                  req.logger.warning({
+                        message: error.message,
+                        method: req.method,
+                        url: req.originalUrl,
+                        date: new Date().toLocaleDateString(),
+                  });
+
+                  res.status(401).json({
+                        message: error.message
+                  });
+
+            };
+
+      };
+
       static async loginOne(req, res, next) {
 
             try {
@@ -217,6 +246,44 @@ export class UsersController {
                   });
 
             };
+
+      };
+
+      static async uploadDocuments(req, res, next) {
+
+            try {
+
+                  const _id = req.params.id;
+                  const files = req.files;
+
+                  const updatedUser = await usersRepository.uploadDocuments(_id, files);
+
+                  const response = successResponse(updatedUser);
+
+                  if (response.payload.password) response.payload.password = undefined;
+
+                  res.status(200).json({
+                        status: "success",
+                        message: `Documentos de usuario ${updatedUser.email}, actualizados correctamente`,
+                        payload: response.payload
+                  });
+
+            } catch (error) {
+
+                  req.logger.error({
+                        message: error.message,
+                        method: req.method,
+                        url: req.originalUrl,
+                        date: new Date().toLocaleDateString(),
+                        stack: error.stack
+                  });
+
+                  res.status(500).json({
+                        status: 'error',
+                        message: error.message,
+                  });
+
+            }
 
       };
 

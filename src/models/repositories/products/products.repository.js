@@ -6,9 +6,9 @@ import {
 } from "../../dtos/index.dtos.js";
 
 const {
+    GetProductDTO,
     SaveProductDTO,
     LoadProductDTO,
-    GetProductDTO,
     UpdateProductDTO,
     DeleteProductDTO
 } = getDTOS();
@@ -45,7 +45,13 @@ export class ProductsRepository {
 
     async getById(id) {
 
-        return await this.dao.getById(id);
+        const product = await this.dao.getById(id);
+
+        const preparedProduct = new GetProductDTO(product);
+
+        if (preparedProduct.errors) throw new Error(JSON.stringify(preparedProduct.errors));
+
+        return preparedProduct;
 
     };
 
@@ -99,7 +105,7 @@ export class ProductsRepository {
             throw new Error('El producto no existe');
         };
 
-        if (productToUpdate.owner.toString() !== user._id.toString()) {
+        if (productToUpdate.owner.toString() !== user._id.toString() && user.role !== 'ADMIN') {
             throw new Error('El producto no te pertenece');
         };
 

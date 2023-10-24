@@ -1,5 +1,40 @@
 import productsModel from "../../schemas/products.schema.js";
 
+class ValidationError extends Error {
+
+    constructor(errors) {
+
+        super();
+        this.errors = errors;
+
+    }
+
+}
+
+export class GetProductDTO {
+
+    constructor(payload) {
+
+        try {
+
+            const product = payload
+
+            if (!product) throw new ValidationError(["No se ha encontrado el producto"]);
+
+            this.payload = product;
+
+        } catch (error) {
+
+            if (error instanceof ValidationError) return {
+                errors: error.errors
+            };
+
+        };
+
+    };
+
+};
+
 export class SaveProductDTO {
 
     constructor(payload, user) {

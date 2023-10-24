@@ -1,12 +1,13 @@
-import {
-      error
-} from "console";
+import path from "path";
 import {
       createHash,
       compareHash
 } from "../../../utils/bcrypt/bcrypt.utils.js";
 
 import crypto from "crypto";
+import {
+      th
+} from "@faker-js/faker";
 
 const validEmail = (email) => {
 
@@ -26,6 +27,40 @@ class ValidationError extends Error {
       }
 
 }
+
+export class GetAllDTO {
+
+      constructor(payload) {
+
+            try {
+
+                  if (!payload) throw new ValidationError(["No se han encontrado usuarios"]);
+
+                  const users = []
+
+                  payload.forEach(user => {
+
+                        users.push({
+                              first_name: user.first_name,
+                              email: user.email,
+                              role: user.role
+                        });
+
+                  });
+
+                  this.users = users;
+
+            } catch (error) {
+
+                  if (error instanceof ValidationError) return {
+                        errors: error.errors
+                  };
+
+            };
+
+      };
+
+};
 
 export class GetUserDTO {
 
@@ -146,7 +181,123 @@ export class SaveUserDTO {
 
 };
 
-export class UpdateRoleDTO {
+export class UpdateDocumentsDTO {
+
+      constructor(user, files) {
+
+            try {
+
+                  if (!user) throw new ValidationError(["El usuario que se intenta actualizar, no existe"]);
+
+                  if (!files) throw new ValidationError(["Se requieren los archivos a subir"]);
+
+                  if (files.length < 1) throw new ValidationError(["Se requiere al menos un archivo"]);
+
+                  const documents = [];
+
+                  if (user.documents.length > 0) {
+
+                        user.documents.forEach(doc => {
+
+                              documents.push({
+
+                                    name: doc.name,
+                                    reference: doc.reference,
+                                    extension: doc.extension
+
+                              });
+
+                        });
+
+                  }
+
+                  files.forEach(file => {
+
+                        const formattedName = path.basename(file.originalname, path.extname(file.originalname)).toLowerCase().replace(/\s+/g, '');
+
+                        const fileExtension = path.extname(file.originalname);
+
+                        const documentExist = documents.some(doc => doc.name === formattedName);
+
+                        if (!documentExist) {
+
+                              documents.push({
+                                    name: formattedName,
+                                    reference: file.filename,
+                                    extension: fileExtension
+                              });
+
+                        } else {
+
+                              throw new ValidationError([`El documento "${formattedName}" ya existe`]);
+
+                        }
+
+                  });
+
+                  this._id = user._id;
+                  this.first_name = user.first_name;
+                  this.last_name = user.last_name;
+                  this.email = user.email;
+                  this.age = user.age;
+                  this.password = user.password;
+                  this.role = user.role;
+                  this.phone = user.phone;
+                  this.documents = documents;
+
+            } catch (error) {
+
+                  if (error instanceof ValidationError) return {
+                        errors: error.errors
+                  };
+
+            }
+
+      }
+
+}
+
+export class UpdateRolePremiumDTO {
+
+      constructor(payload) {
+
+            try {
+
+                  const requiredDocs = ["identificacion", "comprobantededomicilio", "comprobantedeestadodecuenta"];
+
+                  if (!payload) throw new ValidationError(["Se requiere un usuario valido"]);
+
+                  if (!payload.documents) throw new ValidationError(["Faltan documentos requeridos para actualizar al usuario a premium."]);
+
+                  const userDocs = payload.documents.map(doc => doc.name);
+
+                  requiredDocs.forEach(requiredDoc => {
+
+                        if (!userDocs.includes(requiredDoc)) {
+
+                              throw new ValidationError([`Falta el documento "${requiredDoc}"`]);
+
+                        }
+
+                  });
+
+                  const role = 'PREMIUM'
+
+                  this.role = role
+
+            } catch (error) {
+
+                  if (error instanceof ValidationError) return {
+                        errors: error.errors
+                  };
+
+            }
+
+      }
+
+};
+
+export class UpdateRoleUserDTO {
 
       constructor(payload) {
 
@@ -154,21 +305,9 @@ export class UpdateRoleDTO {
 
                   if (!payload) throw new ValidationError(["Se requiere un usuario valido"]);
 
-                  if (payload.role === 'USER') {
+                  const role = 'USER'
 
-                        payload.role = 'PREMIUM'
-
-                  } else if (payload.role === 'PREMIUM') {
-
-                        payload.role = 'USER'
-
-                  } else {
-
-                        throw new ValidationError(["El usuario no tiene un rol valido"]);
-
-                  }
-
-                  this.role = payload.role ? payload.role : 'USER';
+                  this.role = role
 
 
             } catch (error) {

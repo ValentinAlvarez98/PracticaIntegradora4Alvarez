@@ -1,11 +1,22 @@
 
 openapi: 3.0.0
 info:
-  version: 1.0.0
+  version: 0.9.0
   title: Users API
   description: API para el manejo de usuarios.
 
 paths:
+  /api/users/:
+    get:
+      summary: Obtener todos los usuarios.
+      security:
+        - CookieAuth: []
+      responses:
+        200:
+          description: Listado de usuarios.
+        401:
+          description: No está autorizado.
+
   /api/users/login:
     post:
       summary: Iniciar sesión como usuario.
@@ -82,6 +93,50 @@ paths:
       responses:
         200:
           description: Sesión cerrada correctamente.
+
+  /api/users/{uid}/documents:
+    post:
+      summary: Sube uno o múltiples documentos para un usuario.
+      description: Permite a un usuario subir documentos que serán almacenados y asociados a su perfil.
+      parameters:
+        - in: path
+          name: uid
+          required: true
+          description: ID único del usuario.
+          schema:
+            type: string
+      requestBody:
+        description: Datos del documento a subir.
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                documents:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        200:
+          description: Documentos subidos correctamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        400:
+          description: Error en la solicitud.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
 
   /api/users/premium/{id}:
     put:

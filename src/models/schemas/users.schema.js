@@ -53,6 +53,25 @@ const usersSchema = new mongoose.Schema({
             type: Date,
       },
 
+      documents: [{
+            name: {
+                  type: String,
+                  required: true
+            },
+            reference: {
+                  type: String,
+                  required: true
+            },
+            extension: {
+                  type: String,
+                  required: true
+            },
+      }],
+
+      last_connection: {
+            type: Date
+      },
+
 });
 
 const usersModel = mongoose.model(usersCollection, usersSchema);

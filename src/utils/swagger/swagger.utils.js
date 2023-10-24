@@ -6,7 +6,7 @@ export const swaggerOptions = {
             openapi: '3.0.0',
             info: {
                   title: 'Documentación de la API',
-                  version: '1.0.0',
+                  version: '0.9.0',
                   description: `Documentación sobre el manejo de productos, carritos y usuarios. \n
 Contacto:`,
                   contact: {

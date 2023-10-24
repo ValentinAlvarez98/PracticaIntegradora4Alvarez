@@ -11,6 +11,12 @@ export class UsersMongoDAO {
 
       };
 
+      async getAll() {
+
+            return await usersModel.find({}).lean();
+
+      };
+
       async getOne(payload) {
 
             if (payload.email) {

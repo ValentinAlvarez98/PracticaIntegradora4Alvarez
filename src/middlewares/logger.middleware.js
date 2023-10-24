@@ -1,5 +1,5 @@
 import winston from 'winston';
-import CONFIG from '../../config/environment/config.js';
+import CONFIG from '../config/environment/config.js';
 
 const customLevels = {
       levels: {

@@ -1,7 +1,7 @@
 
 openapi: 3.0.0
 info:
-  version: 1.0.0
+  version: 0.9.0
   title: Products API
   description: API para el manejo de productos.
 
@@ -93,7 +93,7 @@ paths:
         401:
           description: No está autorizado.
 
-        404:
+        500:
           description: No se ha encontrado el producto.
     put:
       summary: Actualizar un producto por ID

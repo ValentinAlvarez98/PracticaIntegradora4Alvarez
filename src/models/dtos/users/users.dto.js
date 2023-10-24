@@ -1,4 +1,7 @@
 import {
+      error
+} from "console";
+import {
       createHash,
       compareHash
 } from "../../../utils/bcrypt/bcrypt.utils.js";
@@ -140,6 +143,43 @@ export class SaveUserDTO {
             }
 
       };
+
+};
+
+export class UpdateRoleDTO {
+
+      constructor(payload) {
+
+            try {
+
+                  if (!payload) throw new ValidationError(["Se requiere un usuario valido"]);
+
+                  if (payload.role === 'USER') {
+
+                        payload.role = 'PREMIUM'
+
+                  } else if (payload.role === 'PREMIUM') {
+
+                        payload.role = 'USER'
+
+                  } else {
+
+                        throw new ValidationError(["El usuario no tiene un rol valido"]);
+
+                  }
+
+                  this.role = payload.role ? payload.role : 'USER';
+
+
+            } catch (error) {
+
+                  if (error instanceof ValidationError) return {
+                        errors: error.errors
+                  };
+
+            }
+
+      }
 
 };
 

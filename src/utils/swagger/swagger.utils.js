@@ -5,10 +5,10 @@ export const swaggerOptions = {
       definition: {
             openapi: '3.0.0',
             info: {
-                  title: 'Desafío - Documentación de la API',
+                  title: 'Documentación de la API',
                   version: '1.0.0',
-                  description: `Documentación sobre el manejo de productos, carritos y usuarios. \\n
-            Contacto:`,
+                  description: `Documentación sobre el manejo de productos, carritos y usuarios. \n
+Contacto:`,
                   contact: {
                         name: 'Valentín Alvarez',
                         url: 'https://www.linkedin.com/in/valentin-alvarez-bianchi/',

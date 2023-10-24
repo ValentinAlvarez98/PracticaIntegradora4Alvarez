@@ -26,7 +26,7 @@ paths:
         401:
           description: Credenciales incorrectas.
   
-  /api/users/admin:
+  /api/users/login/admin:
     post:
       summary: Iniciar sesión como administrador.
       requestBody:
@@ -82,6 +82,37 @@ paths:
       responses:
         200:
           description: Sesión cerrada correctamente.
+
+  /api/users/premium/{id}:
+    put:
+      summary: Actualizar rol del usuario.
+      security:
+        - CookieAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: false
+          description: ID del usuario.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+      responses:
+        200:
+          description: Rol del usuario actualizado correctamente.
+        400:
+          description: Error en los datos proporcionados.
+        401:
+          description: No está autorizado.
+        404:
+          description: No se ha encontrado el usuario.
 
   /api/users/update:
     put:

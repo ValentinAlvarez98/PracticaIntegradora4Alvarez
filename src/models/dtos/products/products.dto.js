@@ -17,8 +17,6 @@ export class SaveProductDTO {
             throw new Error('No tienes permisos para realizar esta acción')
         };
 
-
-
         const product = {
             title: this.payload.title,
             description: this.payload.description,
@@ -32,13 +30,12 @@ export class SaveProductDTO {
             owner: user._id ? user._id : 'ADMIN',
         }
 
-        console.log(product);
-
         const campos = [];
 
         Object.keys(product).forEach(key => {
 
-            if (key !== 'thumbnails' && product[key] === undefined) {
+            if (key !== 'status' &&
+                key !== 'thumbnails' && product[key] === undefined) {
                 campos.push(key.toUpperCase());
             }
 

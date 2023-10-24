@@ -10,6 +10,7 @@ const {
       SaveUserDTO,
       LoadUserDTO,
       GetUserDTO,
+      UpdateRoleDTO,
       UpdateUserDTO,
       DeleteUserDTO,
       LoadAdminDTO,
@@ -62,6 +63,28 @@ export class UsersRepository {
             const user = await this.dao.addOne(userPayload);
 
             return user;
+
+      };
+
+      async updateRole(payload) {
+
+            const user = await this.dao.getOne({
+                  email: payload.email,
+                  _id: payload._id
+            });
+
+            const updatedRole = new UpdateRoleDTO(user);
+
+            const updatedUser = {
+                  ...user,
+                  role: updatedRole.role
+            }
+
+            if (updatedRole.errors) throw new Error(JSON.stringify(updatedRole.errors));
+
+            const result = await this.dao.updateOne(updatedUser);
+
+            return result ? updatedUser : result;
 
       };
 

@@ -220,6 +220,57 @@ export class UsersController {
 
       };
 
+      static async updateRole(req, res, next) {
+
+            try {
+
+                  const _id = req.params.id;
+                  const body = req.body;
+                  const payload = {
+                        email: body.email,
+                        _id: _id,
+                  }
+
+                  const user = await usersRepository.updateRole(payload);
+
+                  if (!user) {
+                        req.logger.warning(`El usuario ${payload}, no existe`);
+                        res.status(400).json({
+                              message: `El usuario ${payload}, no existe`
+                        });
+                        return;
+                  }
+
+                  const response = successResponse(user);
+
+                  if (response.payload.password) response.payload.password = undefined;
+
+                  res.status(200).json({
+                        status: "success",
+                        message: `Usuario ${payload}, actualizado correctamente`,
+                        payload: response.payload
+                  });
+
+
+            } catch (error) {
+
+                  req.logger.error({
+                        message: error.message,
+                        method: req.method,
+                        url: req.originalUrl,
+                        date: new Date().toLocaleDateString(),
+                        stack: error.stack
+                  });
+
+                  res.status(500).json({
+                        status: 'error',
+                        message: error.message,
+                  });
+
+            }
+
+      }
+
       static async updateOne(req, res, next) {
 
             try {

@@ -11,12 +11,7 @@ const customFaker = new Faker({
 
 export const generateProducts = () => {
 
-      const owner = customFaker.datatype.boolean() ?
-            customFaker.database.mongodbObjectId() :
-            'admin';
-
       return {
-            _id: customFaker.database.mongodbObjectId(),
             title: customFaker.commerce.productName(),
             description: faker.commerce.productDescription(),
             code: customFaker.string.alphanumeric({
@@ -26,7 +21,6 @@ export const generateProducts = () => {
                   }
             }),
             price: customFaker.commerce.price(),
-            status: customFaker.datatype.boolean(0.85),
             stock: customFaker.number.int({
                   min: 0,
                   max: 100
@@ -46,7 +40,6 @@ export const generateProducts = () => {
                   min: 1,
                   max: 500
             }),
-            owner: owner,
       }
 
 }

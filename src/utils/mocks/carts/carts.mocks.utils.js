@@ -55,8 +55,6 @@ export const generateCarts = () => {
             }
       })
 
-      const date_created = Date.now();
-
       const generatedUser = generateUsers();
 
       const user = generatedUser._id;

@@ -15,9 +15,10 @@ export const generateUsers = () => {
 
       const dateCreated = Date.now();
 
+      const password = customFaker.internet.password();
+
       return {
 
-            _id: customFaker.database.mongodbObjectId(),
             first_name: customFaker.person.firstName(),
             last_name: customFaker.person.lastName(),
             email: customFaker.internet.email(),
@@ -25,13 +26,8 @@ export const generateUsers = () => {
                   min: 18,
                   max: 100
             }),
-            password: customFaker.internet.password(),
-            role,
-            phone: faker.phone.number('+598 9' + `${customFaker.number.int({
-                  min: 1,
-                  max: 9
-            })}` + '#######'),
-            date_created: dateCreated,
+            password: password,
+            confirm_password: password,
 
       }
 
